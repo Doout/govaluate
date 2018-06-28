@@ -418,15 +418,19 @@ func separatorStage(left interface{}, right interface{}, parameters Parameters) 
 	return ret, nil
 }
 
-func inStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
-
-	for _, value := range right.([]interface{}) {
-		if left == value {
-			return true, nil
+func inStage(left interface{}, right interface{}) (interface{}, error) {
+	val := reflect.Indirect(reflect.ValueOf(right))
+	switch val.Kind() {
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < val.Len(); i++ {
+			if left == val.Index(i).Interface() {
+				return true, nil
+			}
 		}
 	}
 	return false, nil
 }
+
 
 //
 
@@ -497,12 +501,14 @@ func comparatorTypeCheck(left interface{}, right interface{}) bool {
 }
 
 func isArray(value interface{}) bool {
-	switch value.(type) {
-	case []interface{}:
+	val := reflect.Indirect(reflect.ValueOf(value))
+	switch val.Kind() {
+	case reflect.Slice, reflect.Array:
 		return true
 	}
 	return false
 }
+
 
 /*
 	Converting a boolean to an interface{} requires an allocation.

@@ -418,7 +418,7 @@ func separatorStage(left interface{}, right interface{}, parameters Parameters) 
 	return ret, nil
 }
 
-func inStage(left interface{}, right interface{}) (interface{}, error) {
+func inStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
 	val := reflect.Indirect(reflect.ValueOf(right))
 	switch val.Kind() {
 	case reflect.Slice, reflect.Array:
